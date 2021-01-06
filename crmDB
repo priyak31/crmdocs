@@ -1,0 +1,24 @@
+
+Database stucture vtiger 
+
+1. module creation custom.
+    1. create script file naming what you want as test.php.inside it stored value of your module name,create fields,init services by php coding.
+    2. stored it at root level of your project.
+    3. run file as localhost/<yourprojectname>/<yourfilename>.
+       it will run and stored vtiger_tab,vtiger_app2tab,vtiger_parenttabrel,vtiger_parenttab,and create table as vtiger_<modulename> as base table without 's suffix' 
+       and vtiger_<modulename>cf as custom table alse grouprel table.
+
+2. field related tables are 
+   vtiger_field
+   vtiger_fieldmodulerel
+   vtiger_field_seq
+
+3. block related tables are
+    vtiger_block
+    vtiger_blocks_seq
+
+4. crm maintain log
+   vtiger_audit_trial
+
+5. salutation 
+   vtiger_salutationtype
