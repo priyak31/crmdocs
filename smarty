@@ -1,6 +1,6 @@
 link reference => Smarty 3 Manual
 ==========================================================================================================================
-Chapter 1. What is Smarty?
+What is Smarty?
 Smarty is a template engine for PHP. More specifically, it facilitates a manageable way to separate application logic and content from its presentation. This is best described in a situation where the application programmer and the template designer play different roles, or in most cases are not the same person.
 
 For example, let's say you are creating a web page that is displaying a newspaper article.
