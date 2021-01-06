@@ -1,1 +1,181 @@
+link reference => Smarty 3 Manual
+==========================================================================================================================
+Chapter 1. What is Smarty?
+Smarty is a template engine for PHP. More specifically, it facilitates a manageable way to separate application logic and content from its presentation. This is best described in a situation where the application programmer and the template designer play different roles, or in most cases are not the same person.
+
+For example, let's say you are creating a web page that is displaying a newspaper article.
+
+The article $headline, $tagline, $author and $body are content elements, they contain no information about how they will be presented. They are passed into Smarty by the application.
+
+Then the template designer edits the templates and uses a combination of HTML tags and template tags to format the presentation of these variables with elements such as tables, div's, background colors, font sizes, style sheets, svg etc.
+
+One day the programmer needs to change the way the article content is retrieved, ie a change in application logic. This change does not affect the template designer, the content will still arrive in the template exactly the same.
+
+Likewise, if the template designer wants to completely redesign the templates, this would require no change to the application logic.
+
+Therefore, the programmer can make changes to the application logic without the need to restructure templates, and the template designer can make changes to templates without breaking application logic.
+
+One design goal of Smarty is the separation of business logic and presentation logic.
+
+This means templates can certainly contain logic under the condition that it is for presentation only. Things such as including other templates, alternating table row colors, upper-casing a variable, looping over an array of data and displaying it are examples of presentation logic.
+
+This does not mean however that Smarty forces a separation of business and presentation logic. Smarty has no knowledge of which is which, so placing business logic in the template is your own doing.
+
+Also, if you desire no logic in your templates you certainly can do so by boiling the content down to text and variables only.
+
+Some of Smarty's features:
+
+It is extremely fast.
+
+It is efficient since the PHP parser does the dirty work.
+
+No template parsing overhead, only compiles once.
+
+It is smart about recompiling only the template files that have changed.
+
+You can easily create your own custom functions and variable modifiers, so the template language is extremely extensible.
+
+Configurable template {delimiter} tag syntax, so you can use {$foo}, {{$foo}}, <!--{$foo}-->, etc.
+
+The {if}..{elseif}..{else}..{/if} constructs are passed to the PHP parser, so the {if...} expression syntax can be as simple or as complex an evaluation as you like.
+
+Allows unlimited nesting of sections, if's etc.
+
+Built-in caching support
+
+Arbitrary template sources
+
+Template Inheritance for easy management of template content.
+
+Plugin architecture
+============================================================================================================================
+Variables
+
+Template variables start with the $dollar sign. 
+They can contain numbers, letters and underscores,
+much like a PHP variable. You can reference arrays by index numerically or
+non-numerically. Also reference object properties and methods.
+
+Example 3.2. Variables
+
+
+{$foo}        <-- displaying a simple variable (non array/object)
+{$foo[4]}     <-- display the 5th element of a zero-indexed array
+{$foo.bar}    <-- display the "bar" key value of an array, similar to PHP $foo['bar']
+{$foo.$bar}   <-- display variable key value of an array, similar to PHP $foo[$bar]
+{$foo->bar}   <-- display the object property "bar"
+{$foo->bar()} <-- display the return value of object method "bar"
+{#foo#}       <-- display the config file variable "foo"
+{$smarty.config.foo} <-- synonym for {#foo#}
+{$foo[bar]}   <-- syntax only valid in a section loop, see {section}
+{assign var=foo value='baa'}{$foo} <--  displays "baa", see {assign}
+=========================================================================================================================================
+Functions
+Every Smarty tag either prints a variable or invokes some sort of function. These are processed and displayed by enclosing the function and its attributes within delimiters like so: {funcname attr1="val1" attr2="val2"}.
+
+Example 3.3. function syntax
+
+
+{config_load file="colors.conf"}
+
+{include file="header.tpl"}
+{insert file="banner_ads.tpl" title="My Site"}
+
+{if $logged_in}
+    Welcome, <span style="color:{#fontColor#}">{$name}!</span>
+{else}
+    hi, {$name}
+{/if}
+
+{include file="footer.tpl"}
+
+  
+
+Both built-in functions and custom functions have the same syntax within templates.
+
+Built-in functions are the inner workings of Smarty, such as {if}, {section} and {strip}. There should be no need to change or modify them.
+
+Custom functions are additional functions implemented via plugins. They can be modified to your liking, or you can create new ones. {html_options} is an example of a custom function
+
+=====================================================================================
+Attributes
+Most of the functions take attributes that specify or modify their behavior. Attributes to Smarty functions are much like HTML attributes. Static values don't have to be enclosed in quotes, but it is required for literal strings. Variables with or without modifiers may also be used, and should not be in quotes. You can even use PHP function results, plugin results and complex expressions.
+
+Some attributes require boolean values (TRUE or FALSE). These can be specified as true and false. If an attribute has no value assigned it gets the default boolean value of true.
+
+Example 3.4. function attribute syntax
+
+
+{include file="header.tpl"}
+
+{include file="header.tpl" nocache}  // is equivalent to nocache=true
+
+{include file="header.tpl" attrib_name="attrib value"}
+
+{include file=$includeFile}
+
+{include file=#includeFile# title="My Title"}
+
+{assign var=foo value={counter}}  // plugin result
+
+{assign var=foo value=substr($bar,2,5)}  // PHP function result
+
+{assign var=foo value=$bar|strlen}  // using modifier
+
+{assign var=foo value=$buh+$bar|strlen}  // more complex expression
+
+{html_select_date display_days=true}
+
+{mailto address="smarty@example.com"}
+
+<select name="company_id">
+  {html_options options=$companies selected=$company_id}
+</select>
+=================================================================
+
+Embedding Vars in Double Quotes
+Smarty will recognize assigned variables embedded in "double quotes" so long as the variable name contains only numbers, letters and under_scores. See naming for more detail.
+
+With any other characters, for example a period(.) or $object->reference, then the variable must be surrounded by `backticks`.
+
+In addition Smarty3 does allow embedded Smarty tags in double quoted strings. This is useful if you want to include variables with modifiers, plugin or PHP function results.
+
+Example 3.5. Syntax examples
+
+
+{func var="test $foo test"}              // sees $foo
+{func var="test $foo_bar test"}          // sees $foo_bar
+{func var="test `$foo[0]` test"}         // sees $foo[0]
+{func var="test `$foo[bar]` test"}       // sees $foo[bar]
+{func var="test $foo.bar test"}          // sees $foo (not $foo.bar)
+{func var="test `$foo.bar` test"}        // sees $foo.bar
+{func var="test `$foo.bar` test"|escape} // modifiers outside quotes!
+{func var="test {$foo|escape} test"}     // modifiers inside quotes!
+{func var="test {time()} test"}          // PHP function result
+{func var="test {counter} test"}         // plugin result
+{func var="variable foo is {if !$foo}not {/if} defined"} // Smarty block function
+
+  
+
+Example 3.6. Examples
+
+
+{* will replace $tpl_name with value *}
+{include file="subdir/$tpl_name.tpl"}
+
+{* does NOT replace $tpl_name *}
+{include file='subdir/$tpl_name.tpl'} // vars require double quotes!
+
+{* must have backticks as it contains a dot "." *}
+{cycle values="one,two,`$smarty.config.myval`"}
+
+{* must have backticks as it contains a dot "." *}
+{include file="`$module.contact`.tpl"}
+
+{* can use variable with dot syntax *}
+{include file="`$module.$view`.tpl"}
+
+==================================================================================================================================
+
+
 
