@@ -1,0 +1,69 @@
+vitigercrm mydocs
+========================================================
+1. MTN telecom project
+
+1.1 crestel_field(Table)
+      ||     
+summarykeyfield = 0 non-visible
+                  1 visible
+headerfield(table heading field) = 1 automatic included 
+                                   0 disable
+
+uitype -> layout ->uitypes->all uifiles are available in tpl extension.
+
+main functional folder name inside is crestel 
+-------------------------------------------------------
+
+1.2 To create module need to create class file of module in root level of our project.
+
+-Copy module_name.php to root level of project
+-Replace module_name with desired name that u want.
+-Also change module name in language file. language -> en_us ->
+--------------------------------------------------------------------
+
+1.3 all crm run on one single file i.e webui when user login
+
+index.php -> it load webui.php file ->webui.php find login user or not and then base on this load component with action using loader.php
+- with the help of webui.php all files name ended with s suffix.
+
+---------------------------------------------------------------------------------
+1.3 layout
+
+-gui design,js,css included in layout folder.
+-v7 and vlayout this both subfolder included.
+-vlayout no custumization included.
+-custumization done in only v7 folder.
+-in v7 
+ - lib included js library..we need to manually add lib script in coding.
+ - module here your created module name present.it include main 2 folder.
+    - vtiger/Crestel  all core gui files derived from this folder in crm.
+    -settings
+   if you want add custumly in your custum/existing  module you need to inherit it.
+
+
+
+
+===========================================================
+Vtiger
+
+main functional folder in system name is Vtiger
+
+==================================================================================
+I want to add a custom UI-Type with a package. Now, I've done everything from the post below:
+1. Added the PHP-File to my package's folder modules/Vtiger/uitypes
+2. Added the Template file to my package's folder layouts/vlayout/modules/Vtiger/uitypes
+3. Added the SQL-Statement in my vtlib-Handler-Class on the install event
+
+
+
+
+
+==================================================================
+applying js
+
+layout-modules-mymodule-resources
+modules-exist-resources
+
+
+
+
