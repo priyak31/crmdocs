@@ -6,6 +6,25 @@ summary
 - system core layout is   =     file: [vtiger roots]/layout/vlayout/
 
 ===========================================================================================================================
+
+1. vtiger entry point starting path
+   index.php->webui.php->function process() hits files ->module.php, module_basic.php, loader.php.
+
+2. for handling url related code
+   file: [vtiger roots]/includes/
+
+3. vtiger core files but not support mvc structures
+   file: [vtiger roots]/include/
+
+4. vtiger core files and also called api. Dependencies are manageble at module creation time after that its become less.
+   file: [vtiger roots]/vtlib/
+   also inside two folders imp  file: [vtiger roots]/vtlib/crestel or vtiger and file: [vtiger roots]/vtlib/setting
+ 
+5. 
+=======================================================================================================================================================
+
+layout
+
 1. the salutation pick-list is handled by the 
    file: [vtiger roots]/layouts/vlayout/modules/Vtiger/uitypes/Salutation.tpl
 
@@ -17,29 +36,16 @@ summary
 
 4. system core layout but not handle it customly 
    file: [vtiger roots]/layouts/vlayout/
-
-4. vtiger entry point starting path
-   index.php->webui.php->function process() hits files ->module.php, module_basic.php, loader.php.
-
-5. for handling url related code
-   file: [vtiger roots]/includes/
-
-6. vtiger core files but not support mvc structures
-   file: [vtiger roots]/include/
-
-7. vtiger core files and also called api. Dependencies are manageble at module creation time after that its become less.
-   file: [vtiger roots]/vtlib/
-   also inside two folders imp  file: [vtiger roots]/vtlib/crestel or vtiger and file: [vtiger roots]/vtlib/setting
-
-8. your all uitype core files available in layout/vlayout/module/vtiger/uitypes. not use it for custom refer.its system core.
+   
+5. your all uitype core files available in layout/vlayout/module/vtiger/uitypes. not use it for custom refer.its system core.
    if u want customly design then custom it path file: [vtiger roots]/layouts/v7/modules/<modulename>/uitypes/<uitypename>.js
    if no file is available there then it will inherit by file: [vtiger roots]/layouts/v7/module/vtiger/uitypes/<uitypename>.js
-   
-   
- 9. 
 
-
- 
+6. To create custom smarty template relate to Detailvie or Edit view you can 
+   copy the file from core files i.e layout/v7/modules/vtiger/DetailViewHeader.tpl and place it in your module path inside layout/v7/<yourmodule> folder.
+   it fetch changes that you made in this file.if you not place any file then it will automatically call parent smarty file.
+   Note: you need to write include smarty code for include file that you place inside your model otherwise it will not found your tpl file no matters actual file exist or not.
+   that include code is {include file="partials/Menubar.tpl"|vtemplate_path:$MODULE}.
 
    
     
