@@ -47,31 +47,22 @@ index.php -> it load webui.php file ->webui.php find login user or not and then 
 
 ===========================================================
 Vtiger
+Inheritance
 
 1.main functional folder in system name is Vtiger
 2.module/yourmodule
-module/vtiger/module.php  parent module
-
-modelclass inherit CRMEntity in vtiger
-and CRMEntity class inherit CRMEntity class from data folder in CRM project.
-
+  module/vtiger/module.php  parent module
+  modelclass inherit CRMEntity in vtiger
+  and CRMEntity class inherit CRMEntity class from data folder in CRM project.
 3.quick create field also called reference field.
 4. Syntax js inheritance
    Vtiger_Edit_js(<yourmodulename>_Edit<Actionname>_js) path layout/v7/<yourmodulename>/resources/<youraction js file e.g Edit or detail>
    if Vtiger edit js file not exist then it will throw error.
+5. you can create custom designing relate to Detail or Edit view.
+   located in layout/v7/<yourmodulename>/DetailView<and yoursubactionname>.tpl  
+   you can place tpl core file as copy from layout/v7/module/vtiger/DetailViewHeader.tpl/ to your module directory of layout.
 
-==================================================================================
-I want to add a custom UI-Type with a package. Now, I've done everything from the post below:
-1. Added the PHP-File to my package's folder modules/Vtiger/uitypes
-2. Added the Template file to my package's folder layouts/vlayout/modules/Vtiger/uitypes
-3. Added the SQL-Statement in my vtlib-Handler-Class on the install event
-
-==================================================================
-applying js
-
-layout-modules-mymodule-resources
-modules-exist-resources
-
+======================================================================================================================================================
 
 
 
