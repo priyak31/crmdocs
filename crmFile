@@ -1,0 +1,44 @@
+file structure
+=========================================================================================================================
+summary
+- your layout inherit by path   = file: [vtiger roots]/layouts/v7/modules/vtiger/  
+- your custom design handle by path  =  file: [vtiger roots]/layouts/v7/modules/<your_module>/
+- system core layout is   =     file: [vtiger roots]/layout/vlayout/
+
+===========================================================================================================================
+1. the salutation pick-list is handled by the 
+   file: [vtiger roots]/layouts/vlayout/modules/Vtiger/uitypes/Salutation.tpl
+
+2. to apply custum js in vtiger for custom module.if your edit.js file not present then custumly created it inside <yourmodulename> folder.
+   file: [vtiger roots]/layouts/v7/modules/<modulename>/resources/Edit.js
+
+3. if module is existing then path is same no need to create it customly.
+    file: [vtiger roots]/layouts/v7/modules/<modulename>/resources/Edit.js
+
+4. system core layout but not handle it customly 
+   file: [vtiger roots]/layouts/vlayout/
+
+4. vtiger entry point starting path
+   index.php->webui.php->function process() hits files ->module.php, module_basic.php, loader.php.
+
+5. for handling url related code
+   file: [vtiger roots]/includes/
+
+6. vtiger core files but not support mvc structures
+   file: [vtiger roots]/include/
+
+7. vtiger core files and also called api. Dependencies are manageble at module creation time after that its become less.
+   file: [vtiger roots]/vtlib/
+   also inside two folders imp  file: [vtiger roots]/vtlib/crestel or vtiger and file: [vtiger roots]/vtlib/setting
+
+8. your all uitype core files available in layout/vlayout/module/vtiger/uitypes. not use it for custom refer.its system core.
+   if u want customly design then custom it path file: [vtiger roots]/layouts/v7/modules/<modulename>/uitypes/<uitypename>.js
+   if no file is available there then it will inherit by file: [vtiger roots]/layouts/v7/module/vtiger/uitypes/<uitypename>.js
+
+
+ 
+
+   
+    
+     
+
