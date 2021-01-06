@@ -34,6 +34,9 @@ summary
 8. your all uitype core files available in layout/vlayout/module/vtiger/uitypes. not use it for custom refer.its system core.
    if u want customly design then custom it path file: [vtiger roots]/layouts/v7/modules/<modulename>/uitypes/<uitypename>.js
    if no file is available there then it will inherit by file: [vtiger roots]/layouts/v7/module/vtiger/uitypes/<uitypename>.js
+   
+   
+ 9. 
 
 
  
