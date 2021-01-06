@@ -8,6 +8,8 @@ summarykeyfield = 0 non-visible
                   1 visible
 headerfield(table heading field) = 1 automatic included 
                                    0 disable
+                                   
+ 
 
 uitype -> layout ->uitypes->all uifiles are available in tpl extension.
 
@@ -46,8 +48,14 @@ index.php -> it load webui.php file ->webui.php find login user or not and then 
 ===========================================================
 Vtiger
 
-main functional folder in system name is Vtiger
+1.main functional folder in system name is Vtiger
+2.module/yourmodule
+module/vtiger/module.php  parent module
 
+modelclass inherit CRMEntity in vtiger
+and CRMEntity class inherit CRMEntity class from data folder in CRM project.
+
+3.quick create field also called reference field.
 ==================================================================================
 I want to add a custom UI-Type with a package. Now, I've done everything from the post below:
 1. Added the PHP-File to my package's folder modules/Vtiger/uitypes
