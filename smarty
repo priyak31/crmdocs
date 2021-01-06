@@ -1,4 +1,6 @@
 link reference => Smarty 3 Manual
+It's really not recommended to use php code in Smarty.
+In fact it's now deprecated and you should avoid such solution as much as possible because it often doesn't have sense.
 ==========================================================================================================================
 What is Smarty?
 Smarty is a template engine for PHP. More specifically, it facilitates a manageable way to separate application logic and content from its presentation. This is best described in a situation where the application programmer and the template designer play different roles, or in most cases are not the same person.
