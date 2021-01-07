@@ -63,6 +63,8 @@ Inheritance
    you can place tpl core file as copy from layout/v7/module/vtiger/DetailViewHeader.tpl/ to your module directory of layout.
 
 ======================================================================================================================================================
+saving entries
 
+index.php->webui>process>$handlerclass will generate->webui trigger the preprocess function->preprocess function located in module/vtiger/views/detail.php.
 
 
