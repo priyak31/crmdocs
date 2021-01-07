@@ -1,11 +1,14 @@
 CA customer account
 SIA service Instance account
-SA Service account
-SI service Instance
-
-create customer account,Billing account,
-multiple sa has one billing account
-MSSDNISDN  inventory group
+SA Service account = mostly included customer address information.
+SI Service Instance = it is subscription of package that customer get.
 
 
-after submit order it goes to WOM work order management
+
+-create customer account,Billing account,
+-multiple SA has one billing account
+-MSSDNISDN  inventory group
+
+
+-After submit order it goes to WOM work order management.it manage orders relate task and send it to the BRM i.e. Billing Account management.it generate bill and invoices and send it to the CRM.
+in CRM customer can see their payment and make payment.
