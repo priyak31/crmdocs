@@ -65,6 +65,8 @@ Inheritance
 ======================================================================================================================================================
 saving entries
 
-index.php->webui>process>$handlerclass will generate->webui trigger the preprocess function->preprocess function located in module/vtiger/views/detail.php.
+-index.php->webui>process>$handlerclass will generate->webui trigger the preprocess function->preprocess function located in module/vtiger/views/detail.php.
+
+-action save.php of parent if not exist save file in exist module->vtiger save.php action call method process and hit save record method->this process save record and create variable $loadUrl by calling url method from record.php vtiger/models/record.php->detail.php call from my current module if exist.otherwise vtiger detail.php called
 
 
