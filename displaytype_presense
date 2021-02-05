@@ -1,0 +1,14 @@
+display types
+
+1 - Displayed both in Detail view and Edit view
+2 - Displayed only in the Detail view (Ex. Created time, Modified time)
+3 - It is not displayed both in DetailView and EditView,but can be shown in ListView
+Example: Total, subtotal in Invoice Module. These Fields are not tied to any block.
+4 - Added for handling passwords.
+
+
+presence
+
+0 - A sort of "system" field. One that should always be visible.
+1 - A Hidden/Inactive field
+2 - A "normal-use" field
