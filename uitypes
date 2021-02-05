@@ -1,0 +1,394 @@
+Selecting a `uitype`
+	First pray you can use one that is built in.
+		# 1 = Text
+		# 5,23* = Date
+		# 7 = Numeric
+		# 9 = Percent
+		# 11 = Phone
+		# 13 = Email
+		# 15,16* = Picklist
+		# 17 = URL
+		# 21 = Text Area
+		# 56 = Checkbox
+		# 71,72* = Currency
+		Non-standard/one-off fields -- DO NOT USE THESE UNLESS YOU UNDERSTAND EXACTLY WHAT YOU ARE DOING
+		# 6 = Date/Time
+		# 19,20* = Text Area (70x8) Spans 70 chars wide (i.e. across both columns)
+		# 21,24* = Text Area (30x2) (single column)
+		# 22 = Text Area (30x2) (single column)
+		# 30 = Reminder selector
+		# 50*,51,73* = Account Name Selector (50,51* have clear button to right of input)
+		# 54 = Drop down list box of groups
+		# 55 = Drop down list box of Salutation
+		# 57 = Contact Name with Select Button
+		# 59 = Product Name
+		# 61,69 = File Name
+		# 62 = Drop down list box for Leads, Accounts, Potentials, Products, Orders, SalesOrder, Invoice
+		# 63 = Drop down list box of Duration
+		# 64 = Due Date
+		# 65 = Drop down list box of "Leads", "Accounts", "Potentials", "Products" for Notes
+		# 66 = Drop down list box for Leads, Accounts, Potentials, Products, Orders, SalesOrder, Invoice (Use for HelpDesk)
+		# 67 = Drop down list box for Leads, Contacts (Use for HelpDesk)
+		# 68 = Drop down list box for Accounts, Contacts
+		# 75,81* = Vendor popup
+		# 76 = Potential popup
+		# 78 = Quote selector popup
+		# 79 = PO selector popup
+		# 80 = SO selector popup
+		# 52,77* = User Select?
+		# 53 = Group Select?
+	If the uitype is not in this list Then:
+		See if you can find a field that does what you want it to already in use.
+		If you can find it:
+			 look up it's uitype in field
+		Else:
+			Goto making you own uitypes
+	else:
+		continue
+    
+    ======================================================================
+	Selecting a `typeofdata`
+	split ~
+	First is type
+	Second is M or O, Mandatory or Optional
+	Currently used types of data.
+		V~M Any Type M = Mandatory
+		V~O Any Type O = Optional
+		I~O Integer Optional
+		E~O Email Optional
+		T~O  Time Optional
+		C~O 
+		D~O 
+		N~O
+		D~M
+		O~O
+		T~M Time Mandatory
+		I~M
+		NN~O
+		D~O~OTH~GE~support_start_date~Support Start Date
+		N~O~3,3~LE~100
+		D~O~OTH~GE~sales_start_date~Sales Start Date
+		D~O~OTH~GE~start_date~Start Date
+		DT~M~time_start~Time Start
+		DT~M~time_start
+		D~M~OTH~GE~date_start~Start Date & Time
+========================================================================================
+	Insert `field` SQL
+	tabid = tab id from above
+	fieldid = 1+ largest fieldid on table
+	columnname = pick a lowercase, underscore delimited field name.
+	tablename = the table this data will be stored on, almost always the name of the current module.
+	generatedtype = 1
+	uitype = uitype selected from above.
+	fieldname = columnname you chose
+	fieldlabel = Human readable 'Field Name', Remember this, you'll need it latter.
+	readonly = 0, I don't think this is really used.
+	presence = 0, I don't think this is really used.
+	selected = 0,
+	maximumlength = max length of input allowed, usually 100
+	sequence = 100, for now.
+	block = blockid from above
+	displaytype = 1,
+	typeofdata = usually V~O but could be another choice from above.
+
+	INSERT INTO `field` set fieldid= , tabid= , block= , columname...
+	
+	SELECT fieldid, fieldname, fieldlabel, sequence FROM `field` WHERE tabid='' AND block = '' ORDER BY sequence;
+		
+	Now play with the sequence until you get the fields in the order you want them in.
+	====================================================================================================================
+	Fix Labels
+	Go into you 'vtiger_crm/modules/MODULEuRhaking/language/' directory
+	edit the en_us.lang.php file.
+
+	Add labels for the field you added, using the fieldlabel as the key.
+	You will also need to to this in the other modules where they will 
+	come in contact with this field.
+	===========================================================================
+	Insert `def_org_field`
+	Set the `tabid` and `fieldid`.
+	INSERT INTO `def_org_field` set tabid='',fieldid='', visible=0, readonly=1;
+	==========================================================================================	
+	Insert into `profile2field`
+	SELECT *  FROM profile;
+	For each profile,( as p)
+		profileid =  p's id
+	INSERT INTO `profile2field` set profileid='',tabid='',fieldid='', visible=0, readonly=1;
+==================================================================================================
+	Creating the field on the specified table
+Now that you have created the field everywhere else, you have to create the place where the data is stored.  Remember the `tablename` and `fieldname` from the first insert?  You are now going to add that field name to that table.  It will look something like:
+	
+		ALTER TABLE `tablename` ADD `fieldname` VARCHAR(255) NULL DEFAULT NULL;
+
+============================================================================================
+Creating new drop-downs
+	First things first,
+Realistically this is a lot of work.  You must ask yourself, “Can I settle with a custom field?”  These can be added from the Administrator Panel.  If not, then you may continue.  Other wise try doing that first.
+What is the difference?  Well a customizable field is not much different, except it shows up in a block called 'Custom Fields.'
+----------------------------------------
+	First Step
+Follow all instructions listed above, in “Adding a Field to a Module (that is not a drop-down),” with two differences.  
+	Difference One:
+		Make the `fieldname`, `columnname` and `tablename` the same.
+		Before choosing the name, make sure a table does not exist in the database with that name.
+	Difference Two:
+		You do not have to alter a table, because you are about to create one.
+    ---------------------------------------------------------------------
+	Creating a table for your drop-down
+You are going to create a table with the above name.  If the name was  employment, then the sql would look like this:
+CREATE TABLE `employment` (
+  `employmentid` int(19) NOT NULL auto_increment,
+  `employment` varchar(200) NOT NULL default '',
+  `sortorderid` int(19) NOT NULL default '0',
+  `presence` int(1) NOT NULL default '1',
+  PRIMARY KEY  (`employmentid`),
+  UNIQUE KEY `Employment_UK0` (`employment`)
+) TYPE=InnoDB AUTO_INCREMENT=1 ;
+	My suggestion is to copy this, and simply replace 'employment' with the name you are using.
+  --------------------------------------------------------------------------
+	Insert SQL
+This was, for me, difficult so pay close attention.  Follow these instructions carefully.  I hope I am telling you this correctly.  I will be using an example to explain this.  In my example the module I was adding a field to was the 'Accounts' module and the field name was 'employment.'
+SELECT * FROM `selectcolumn` WHERE `columnname` LIKE '%account:%';
+
+Results:
++---------+-------------+--------------------------------------------------------------------------------------------+
+| queryid | columnindex | columnname                                                                                    |
++---------+-------------+--------------------------------------------------------------------------------------------+
+|       1 |           4 | account:industry:Accounts_industry:industry:V                                           |
+|       2 |           4 | account:industry:Accounts_industry:industry:V                                           |
++---------+-------------+--------------------------------------------------------------------------------------------+
+
+Now for each query id in the results, in my case 1 and 2, you need to find the next available columnindex.  I would simply run these two queries to find it for me.
+
+SELECT columnindex+1 FROM selectcolumn WHERE queryid =1 ORDER BY columnindex DESC LIMIT 1;
+
+Result:
++--------------------+
+| columnindex+1 |
++--------------------+
+|            6           |
++--------------------+
+
+
+So for queryid 1, the magic number is 6
+
+SELECT columnindex+1 FROM selectcolumn WHERE queryid =2 ORDER BY columnindex DESC LIMIT 1;
+
+Result:
+
++--------------------+
+| columnindex+1 |
++--------------------+
+|             6           |
++--------------------+
+
+So for queryid 2, the magic number is 6
+
+It is simply a coincidences that it is 6 for both, they might have been different.
+Now I would run these inserts.
+
+INSERT INTO `selectcolumn` SET `queryid`=1, `columnindex`= 6,
+	`columnname`='account:employment:Accounts_employment:employment:V';
+INSERT INTO `selectcolumn` SET `queryid`=1, `columnindex`= 6,
+ 	`columnname`= 'account:employment:Accounts_employment:employment:V';
+---------------------------------------------------------------------------------
+Making your new  drop-downs customizable
+You now have two files to edit and you are done.
+First File: vtiger_crm/modules/Settings/ComboFieldList.php
+There is a chain of if / else's that tests for modules by name, find the one that relates to the module that you are hacking.
+
+I would change this:
+elseif($fld_module == 'Accounts')
+{
+    $custFldArray = Array($mod_strings['LBL_ACCOUNT_TYPE']=>'accounttype'
+                          ,$mod_strings['LBL_INDUSTRY']=>'industry');
+    $standCustFld = getStdOutput($custFldArray, $mod_strings);
+}
+
+
+
+Into this:
+elseif($fld_module == 'Accounts')
+{
+    $custFldArray = Array($mod_strings['LBL_ACCOUNT_TYPE']=>'accounttype'
+                          ,$mod_strings['LBL_INDUSTRY']=>'industry'
+                          ,$mod_strings['LBL_EMPLOYMENT']=>'employment');
+    $standCustFld = getStdOutput($custFldArray, $mod_strings);
+}
+
+
+Notice the “LBL_EMPLOYMENT” I just magicly knew to put in there?  Good that is about to get used 
+in the second file we edit.  I used the field name for the value of the mod_string that I added, which in my case was 'employment.'
+
+Now open vtiger_crm/modules/Settings/language/en_us.lang.php
+I would search for “LBL_ACCOUNT_TYPE” because it was above the “LBL_EMPLOYMENT” that I added above.  I would find:
+	'LBL_ACCOUNT_TYPE'=>'Account Type',
+and below it I would add:
+	'LBL_EMPLOYMENT'=>'Employment',
+
+Good, all done.  Now your module should have the new drop-down and you should be able to add values through the administrator panel.
+
+======================================================================================================================================
+Creating a new `uitype`
+	Taken from: http://blogs.vtiger.com/weblog_entry.php?p=14339
+
+	Now, a convention of mine (which you may completely ignore) is to base my new uitype numerically on the previous type. For instance, if I'm knocking off a currency value (uitype == 71), I make my new uitype = 1071 (for example). I then take all the code for uitype = 71 and put in my routine, along with the additions. Words of wisdom: You will want to refer at some point back to the original version of the code (to figure out what you did wrong). It helps remembering what that uitype was. 
+	
+	First of all, there are 3 routines you will be focusing on in utils.php:
+getOutputHtml() -- Builds the Edit View of a field returned in $custfld 
+getDetailViewOutputHtml() -- Build the Detail View of a field returned in $custfld 
+getValue() -- Build the List View of a field. Current Data=$temp_value, Returned Data=$value 
+
+You will notice right away that there are a lot of if statements throughout each routine. I wanted to mitigate having to migrate changes, so here's what I did. In the final else of the routine, I call an external file of tests. Those tests continue the if statements, setting a flag if your custom field is found. If that flag is not set, do what we were going to do anyway. 
+
+Here's the specific changes. The core of each change is adding the following to the final else statement of each if blocks: 
+
+Code: 
+   else {
+      $stillnone = true;
+      include('custom/EditViewFields.php');
+      if ( $stillnone )
+      {
+         (old else code is here)
+      }
+   }
+-------------------------------------------------------------------------------------------------------------
+Examples: 
+getOutputHtml(): 
+
+(snip)
+   else
+   {
+      $stillnone = true;
+      include('custom/EditViewFields.php');
+      if ( $stillnone )
+      {
+         $custfld .= '<td width="20%" class="dataLabel">';
+         //Added condition to set the subject if click Reply All from web mail
+         if($_REQUEST['module'] == 'Emails' && $_REQUEST['mg_subject'] != '')
+         {
+            $value = $_REQUEST['mg_subject'];
+         }
+   
+         if($uitype == 2)
+            $custfld .= '<font color="red">*</font>';
+            $custfld .= $mod_strings[$fieldlabel].':</td>';
+   
+         $custfld .= '<td width="30%"><input name="'.$fieldname.'" type="text" size="25" maxlength="'.$maxlength.'" value="'.$value.'"></td>';
+      }
+   }
+   
+   if ( !eregi("id=",$custfld) )
+      $custfld = preg_replace("/<input/iS","<input id='$fieldname' ",$custfld);
+   
+   return $custfld;
+}
+
+getDetailViewOutputHtml(): 
+(snip)
+   else
+   {
+      $stillnone = true;
+      include('custom/DetailViewFields.php');
+      if ( $stillnone )
+      {
+         $custfld .= '<td width="20%" class="dataLabel">'.$mod_strings[$fieldlabel].':</td>';
+      
+           if($col_fields[$fieldname]=='0')
+               $col_fields[$fieldname]='';
+      
+           $custfld .= '<td width="30%" valign="top" class="dataField">'.$col_fields[$fieldname].'</td>';
+      }
+   }
+   return $custfld;   
+}
+
+getValues(): 
+(snip)
+      else
+      {
+         $stillnone = true;
+         if ( defined('CUSTOM') && CUSTOM  ) include('custom/ListViewFields.php');
+         if ( $stillnone )
+            $value = $temp_val;
+      }
+   }
+
+   return $value;
+}
+
+The prototype for each routine is: 
+custom/EditViewFields.php: 
+<?php
+$stillnone = false;         // Assume we find something
+if ( $uitype == 1071 )
+{      
+   $custfld .= '<td '.$nowrap.' width="20%" class="dataLabel">';
+   $custfld .= $mod_strings[$fieldlabel].':</td>';
+   $custfld .= '<td '.$nowrap.' width="30%"><input align="right" id="amount" readonly name="'.   $fieldname.'" type="text" size="25" maxlength="'.$maxlength.'" value="'.$value.'"></td>';
+}
+else
+{
+   // didn't find anything?
+   $stillnone = true;
+}
+?>
+
+In this routine, I needed to make the opportunity amount calculated from two other custom fields (done in JavaScript).
+custom/DetailViewFields.php: 
+<?php
+include_once('include/FormatCurrency.php');
+$stillnone = false;
+if ( $uitype == 1071 )
+{
+   $custfld .= '<td width="20%" class="dataLabel">';
+   $custfld .= $mod_strings[$fieldlabel].': ('.getDisplayCurrency().')</td>';
+   $custfld .= '<td width="30%" valign="top" align="right" class="dataField">'.formatCurrency($col_fields[$fieldname]).'</td>';   
+}
+else
+{
+   // didn't find anything?
+   $stillnone = true;
+}
+?>
+
+In this field, I wanted to format currency with my own format function. 
+custom/ListViewFields.php: 
+<?php
+include_once('include/FormatCurrency.php');
+$stillnone = false;
+if ( in_array($uitype, array(1071,1007) ) )            // these are right justified
+{
+   $symbol = getCurrencySymbol();
+   if ( $uitype == 1071 )
+      $temp_val = formatCurrency($temp_val);
+   else
+   {
+      if ( round($temp_val) == $temp_val )
+         $temp_val = round($temp_val);
+      $temp_val = $symbol.$temp_val;
+   }
+   $value = "<div align='right'>$temp_val</div>";
+}
+else
+{
+   // didn't find anything?
+   $stillnone = true;
+}
+?>
+
+In this field, I wanted to format currency with my own format function (same as DetailView)
+
+CAUTION! If you add a new Date type field, YOU MUST EDIT include/CustomFieldUtil.php! 
+In function CustomFieldEditView, you will find an "if" statement that looks like: 
+ 
+         if($uitype == 5 || $uitype == 6 || $uitype ==23 )
+
+You must add your Date UI type to this if statement and the one in the else block below (2 versions of this if statement). Otherwise, your new dates will not save to the database! You have been warned! 
+
+Clear as mud? Maybe not. However, now I've only touched 3 places in utils.php, so migrating to the next utils.php is very easy. My life has been much simpler after I went to this strategy.
+
+However, helm's discretion! Full speed ahead, Mr. Sulu! Warp 8! 
+
+Thanks Mike Crowe.
+
