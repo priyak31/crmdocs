@@ -1,0 +1,8 @@
+go to vtiger/models/detailview.php
+- copy past getWidget()andcustumzed your function
+-go to vtigr/view/detail.php
+link your function in exposeMethd('yourfunction');
+$view->assign('smartyvarname',$phpvar)
+
+-to fill the templateand finally reference the template
+echo $viewer->view('tpl.tpl',$modename,'true');
