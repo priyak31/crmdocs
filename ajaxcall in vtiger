@@ -1,0 +1,92 @@
+in editjs add ajax code for populating element of CA
+
+step ->   
+
+  copyCustomerDetailsToBillingAccount: function (data, container, thisInstance) {
+        var customerid = data.record;
+        var crestelInstance = Crestel_Index_Js.getInstance();
+        var crestelEditInstance = Crestel_Edit_Js.getInstance();
+        var message = app.vtranslate('OVERWRITE_EXISTING_DETAILS');
+        app.helper.showConfirmationBox({'message': message}).then(
+                function (e) {
+                    var params = {
+                        'module': "Accounts",
+                        'record': customerid,
+                        'source_module': 'Accounts',
+                        'action': 'GetData'
+                    }
+                    AppConnector.request(params).then(
+                            function (data) {
+                                var getMemberFields = crestelInstance.memberOfBillingFields;
+                                var response = data.result.data;
+                                var siteAddressNum = response.siteAddressDetails.addressnumber;
+                                var hqAddressRef = response.hq_addressreference;
+                                var address_id = $('[name="payment_address"]').val(hqAddressRef);
+                                $('[name="payment_address_display"]').val(siteAddressNum);
+                                crestelInstance.mapAddress(getMemberFields, response, $('.editViewContents'));
+                                var module = 'BillingAccount';
+                                $('[name="taxpayer_reg_no"]').mask("99.999.999.9-999.999");
+                
+                                var field_name = 'payment_address';
+                                var siteIdColumn = 'billing_site_id';
+                                    if(field_name == 'payment_address') {
+                                        var siteIdColumn = 'payment_site_id';
+                                    }
+                                var source_module='SiteAddress';
+                                    
+                                crestelEditInstance.customCopyAddress(source_module, hqAddressRef, field_name, module, customerid, siteIdColumn);
+                            },
+                            function (error, err) {
+
+                            });
+                }, function (error, err) {
+        }
+        );
+        var recordId = jQuery('[name=record]').val();
+        if(recordId == '') {
+            this.resetCustPicCreation();
+            this.allowCustPicCreation();
+        }
+    },
+    
+    
+    
+ 2.   in  registercustomEvent register this function of copyCustomerDetailsToBillingAccount
+    
+    
+     registerCustomEvents: function (container) {
+        var thisInstance = this;
+        var module = 'BillingAccount';
+        $('[name="taxpayer_reg_no"]').mask("99.999.999.9-999.999");
+
+        jQuery('input[name="payment_address"], input[name="billing_address"]', container).on(Crestel_Edit_Js.referenceSelectionEvent, function (e, data) {
+            var field_name = $(this).attr('name');
+            var accountId = $("[name=baccrelatedtocontact]").val();
+            var siteIdColumn = 'billing_site_id';
+            if(field_name == 'payment_address') {
+                var siteIdColumn = 'payment_site_id';
+            }
+            thisInstance.customCopyAddress(data.source_module, data.record, field_name, module, accountId, siteIdColumn);
+        });
+
+        jQuery('input[name="baccrelatedtocontact"]', container).on(Crestel_Edit_Js.referenceSelectionEvent, function (e, data) {
+            thisInstance.copyCustomerDetailsToBillingAccount(data, container, thisInstance);
+        });
+   },
+   
+   
+   3. Not confirm
+   
+   copyCustomerDataOnLoad: function (container) {
+         var record = $('input[name="record"]').val();
+        if (jQuery('input[name="baccrelatedtocontact"]').val() != '' && record == '') {
+            var thisInstance = this;
+            var data = {
+                record: jQuery('input[name="baccrelatedtocontact"]').val()
+            };
+            thisInstance.copyCustomerDetailsToBillingAccount(data);
+        }
+    },    
+    
+    
+    
