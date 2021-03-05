@@ -88,7 +88,7 @@ if ($moduleInstance && file_exists('modules/' . $MODULENAME)) {
        /* $field->sequence    = 1;*/
         $block->addField($field);
         $filter->addField($field, 1);
-        $moduleInstance->setEntityIdentifier($field);
+        
         echo '\n fieldname' .$field->name .'added successfully'."\n";
     }
 
@@ -126,7 +126,7 @@ if ($moduleInstance && file_exists('modules/' . $MODULENAME)) {
        /* $field->sequence    = 1;*/
         $block->addField($field);
         $filter->addField($field, 1);
-        $moduleInstance->setEntityIdentifier($field);
+       
         echo '\n fieldname' .$field->name .'added successfully'."\n";
     }
 
@@ -146,7 +146,7 @@ if ($moduleInstance && file_exists('modules/' . $MODULENAME)) {
        /* $field->sequence    = 1;*/
         $block->addField($field);
         $filter->addField($field, 1);
-        $moduleInstance->setEntityIdentifier($field);
+      
         echo '\n fieldname' .$field->name .'added successfully'."\n";
     }
 
@@ -164,7 +164,7 @@ if ($moduleInstance && file_exists('modules/' . $MODULENAME)) {
        /* $field->sequence    = 1;*/
         $block->addField($field);
         $filter->addField($field, 1);
-        $moduleInstance->setEntityIdentifier($field);
+       
         echo '\n fieldname' .$field->name .'added successfully'."\n";
     }
 
@@ -203,7 +203,7 @@ if ($moduleInstance && file_exists('modules/' . $MODULENAME)) {
        /* $field->sequence    = 1;*/
         $block->addField($field);
         $filter->addField($field, 1);
-        $moduleInstance->setEntityIdentifier($field);
+      
         echo '\n fieldname' .$field->name .'added successfully'."\n";
     }
 
@@ -221,7 +221,7 @@ if ($moduleInstance && file_exists('modules/' . $MODULENAME)) {
        /* $field->sequence    = 1;*/
         $block->addField($field);
         $filter->addField($field, 1);
-        $moduleInstance->setEntityIdentifier($field);
+       
         echo '\n fieldname' .$field->name .'added successfully'."\n";
     }
 
@@ -239,7 +239,7 @@ if ($moduleInstance && file_exists('modules/' . $MODULENAME)) {
        /* $field->sequence    = 1;*/
         $block->addField($field);
         $filter->addField($field, 1);
-        $moduleInstance->setEntityIdentifier($field);
+       
         echo '\n fieldname' .$field->name .'added successfully'."\n";
     }
 
@@ -257,7 +257,7 @@ if ($moduleInstance && file_exists('modules/' . $MODULENAME)) {
        /* $field->sequence    = 1;*/
         $block->addField($field);
         $filter->addField($field, 1);
-        $moduleInstance->setEntityIdentifier($field);
+      
         echo '\n fieldname' .$field->name .'added successfully'."\n";
     }
 
@@ -275,7 +275,7 @@ if ($moduleInstance && file_exists('modules/' . $MODULENAME)) {
        /* $field->sequence    = 1;*/
         $block->addField($field);
         $filter->addField($field, 1);
-        $moduleInstance->setEntityIdentifier($field);
+      
         echo '\n fieldname' .$field->name .'added successfully'."\n";
     }
 
