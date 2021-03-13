@@ -1,0 +1,134 @@
+- table name use = crestel_bss_urlapi
+- in ui go to configuration->api configration->click on Add button->enter the details of above table fields it become save in this table.
+
+
+folder modules/BillingAccount/helper/BSSHelper.php
+ function pushBillingAccount(){} 
+ - this function can call Create BA api and Update BA api
+ - after this create and update BA api success call our api i.e updateloginSatus
+ 
+ code 
+ =================================================================================================
+ 
+ 
+  public function getLoginStatusDetails()
+      {
+        
+        $this->bA->populateWSData();
+        $wsData = &$this->bA->wsData;
+        $accountno = $this->bA->get('baccbillingaccnum');
+        $cwsc_login = $this->bA->get('cwsc_login');
+        if($cwsc_login == 'on'){
+            $selfStatus='Enable';
+        }else{
+            $selfStatus='Disable';
+        }
+        
+        $cust_email =$this->cA->get('email1');
+        $ipAddr=Crestel_Record_Model::getExternalIp();
+        $refID=CrestelCommonUtils::getReferenceId();
+        $loginparams = array (
+            'ipAddress' => $ipAddr,
+            'referenceId' => $refID,
+            'source' => 'CRM',
+            'accountNumber'=> $accountno,
+            'email' => $cust_email,
+            'accountType' => 'ACT06',
+            'selfCareLoginStatus' => $selfStatus,
+        );
+
+        return $loginparams;
+     }
+
+ 
+ 
+ 
+ 
+  public function pushBillingAccount($forceUpdate = true) {
+
+        $atBss = $this->bA->get('bill_act_status');
+
+        $this->appendLog('debug', 'Start ' . __CLASS__ . '::' . __FUNCTION__);
+        $this->_logEventName = empty($atBss) ? 'CERATE_BA' : 'UPDATE_BA';
+        try {
+            $this->validate();
+            $logParams = array();
+            if (empty($atBss)) {
+                $params = $this->getCreateBillingAccountRequest();
+                $API_URL = Settings_Crestel_ConfigModule_Model::getURL('createbi');
+                $response = $this->callBSS($API_URL, 'POST', $params, $logParams, 'Create BA', NULL, 'createbi');
+                 if ($response['responseCode'] == "0") {
+                     $params = $this->getLoginStatusDetails();
+                     $API_URL = Settings_Crestel_ConfigModule_Model::getURL('selfloginstatus');
+                     $response = $this->callBSS($API_URL, 'POST', $params, $logParams, 'updatelogin Status', NULL, 'selfloginstatus');
+                }
+            } elseif ($forceUpdate) {
+                $params = $this->getUdateBillingAccountRequest();
+                $API_URL = Settings_Crestel_ConfigModule_Model::getURL('updateba');
+                $API_URL = static::setApiUrl($API_URL, '{accountNumber}', $params['accountNumber']);
+                $response = $this->callBSS($API_URL, 'PATCH', $params, $logParams, 'Update BA', NULL, 'updateba');
+                if ($response['responseCode'] == "0") {
+                     $params = $this->getLoginStatusDetails();
+                     $API_URL = Settings_Crestel_ConfigModule_Model::getURL('selfloginstatus');
+                     $response = $this->callBSS($API_URL, 'POST', $params, $logParams, 'updatelogin Status', NULL, 'selfloginstatus');
+                }
+            } else {
+                //Skeeping the Update API call
+                return $result = array(
+                    'responseCode' => 0,
+                    'responseMessage' => 'Success',
+                );
+            }
+            if ($this->getAPIStatus() == true) {
+                $result = $this->updateOnSuccess($response, empty($atBss));
+                
+            } else {
+                //Handle and report error
+                $result = $this->getErrorsFormResponse($response, empty($atBss));
+            }
+        } catch (Exception $ex) {
+            $this->appendLog('fatal', 'Exception:' . print_r($ex, true));
+            throw $ex;
+        }
+        return $result;
+    }
+
+
+step 3 call this pushBillingAccount() in modules/Invoice/action/BillingAccount.php in create_billingaccount (){}
+
+public function create_billingaccount($modelrecord, $recordid, $customer_id, $inventory_msisdn = '') {
+        global $adb, $current_user;
+        $BillingAccount_ValidateRecord_Action_handlerClass = Crestel_Loader::getComponentClassName('Action', 'ValidateRecord', 'BillingAccount');
+		$billingaccountid = $modelrecord->getId();
+        $returnbill = $BillingAccount_ValidateRecord_Action_handlerClass::validate_billingaccount($modelrecord);
+        if ($returnbill['errorcode'] == 1) {
+            $errormsg .= $returnbill['errormsg'];
+        }
+        $BillingHelper = CrestelBSSHelper::getBSSHelperInstance('BillingAccount');
+        $BillingHelper->setBillingAccount($modelrecord);
+        $customerModel = Crestel_Record_Model::getInstanceById($customer_id, 'Accounts');
+        $customerModel->set('id', $customer_id);
+        $BillingHelper->setAccounts($customerModel);
+       
+		$billingAccountStatus = CrestelCommonUtils::getMappedStatus('', 'BillingAccount');
+
+		$result = $BillingHelper->pushBillingAccount(false);
+		if ($result) {
+			$responsecode = (string) $result['code'];
+			$responseMessage = $result->responseMessage;
+		} else {
+			$responsecode = '-1';
+			$responseMessage = 'Invalid data passed';
+		}
+
+		if ($responsecode == "0") {
+			$adb->query("UPDATE `crestel_billingaccount` SET `bill_act_status` = '1', `baccstatus` = '{$billingAccountStatus}' WHERE `billingaccountid`= $billingaccountid");
+			return $result;
+		}
+
+		return $result;
+	}
+	
+
+
+
