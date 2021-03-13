@@ -7,6 +7,7 @@ Database stucture vtiger
     3. run file as localhost/<yourprojectname>/<yourfilename>.
        it will run and stored vtiger_tab,vtiger_app2tab,vtiger_parenttabrel,vtiger_parenttab,and create table as vtiger_<modulename> as base table without 's suffix' 
        and vtiger_<modulename>cf as custom table alse grouprel table.
+       4. also update crestel_entityname table that auto numbering of id of modules are set e.g vi_number of voice inventory model
 
 2. field related tables are 
    vtiger_field
