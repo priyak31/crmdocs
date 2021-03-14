@@ -1,0 +1,55 @@
+A] Execute SQL query in db:
+update `crestel_relatedlists_seq` set id=(select max(relation_id) from `crestel_relatedlists`)
+
+
+
+INSERT IGNORE INTO `crestel_relatedlists`
+(`relation_id`,`tabid`, `related_tabid`, `name`, `sequence`, `label`, `presence`)
+VALUES ((SELECT id+1 FROM crestel_relatedlists_seq),(SELECT tabid FROM crestel_tab WHERE name = 'Accounts'),
+(SELECT tabid FROM crestel_tab WHERE name = 'Accounts'),'ticket_details',22,'LBL_TICKET_DETAILS',0);
+
+====================================================================
+
+B] Add below code in ‘C:\xampp\htdocs\TAL-CRM\modules\Accounts\views\RelatedList.php’ : 
+
+ //show ticket details on customer
+         if($label == 'LBL_TICKET_DETAILS')
+         {
+
+          $ticketResult = $adb->pquery("SELECT t.ticket_no, a.accountname, t.status, t.category FROM crestel_account as a INNER JOIN crestel_troubletickets as t ON t.parent_id=a.accountid WHERE a.accountid=?", array($parentId));
+           $viewer->assign('TICKET_DETAILS',$ticketResult);
+           $viewer->view('ticketDetails.tpl',$moduleName);
+
+        }
+		
+	==============================================================================================================================
+C] Create file ticketDetails in C:\xampp\htdocs\TAL-CRM\layouts\v7\modules\Accounts\ticketDetails.tpl and paste below code in file :
+		
+		
+{strip}
+<div>
+<table class="table table-bordered listViewEntriesTable equalsplit">
+<thead>
+<tr class="listViewHeaders">
+<th>{vtranslate('TICKET_NO','Accounts')}</th>
+<th>{vtranslate('LBL_SUBJECT','Accounts')}</th>
+<th>{vtranslate('LBL_TICKET_CATEGORY','Accounts')}</th>
+<th>{vtranslate('LBL_ACCOUNT_NAME','Accounts')}</th>
+<th>{vtranslate('LBL_STATUS','Accounts')}</th>
+</tr>
+</thead>
+<tbody>
+{foreach item=TICKET_DATA from=$TICKET_DETAILS}
+<tr>
+<td>{$TICKET_DATA.ticket_no|trim}</td>
+<td>{$TICKET_DATA.category|trim}</td>
+<td>{$TICKET_DATA.category|trim}</td>
+<td>{$TICKET_DATA.accountname|trim}</td>
+<td>{$TICKET_DATA.status|trim}</td>
+</tr>
+{/foreach}
+</tbody>
+</table>
+</div>
+{/strip}
+
